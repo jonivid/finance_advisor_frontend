@@ -39,17 +39,12 @@ export const get = async <T>(
 };
 
 // Generic POST request
-export const post = async <T, D>(
+export const post = async <Response, Request>(
   url: string,
-  data: D,
-  config?: AxiosRequestConfig,
-): Promise<T> => {
-  try {
-    const response = await axiosInstance.post<T>(url, data, config);
-    return response.data;
-  } catch (error) {
-    return handleApiError(error);
-  }
+  data: Request,
+): Promise<Response> => {
+  const response = await axiosInstance.post<Response>(url, data);
+  return response.data;
 };
 
 // Error handling function

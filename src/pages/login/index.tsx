@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
-import axios from "axios";
+import { loginUser } from "@/api/auth";
+import { TokenProps } from "@/types/global";
+import { ApiError } from "@/types/api";
 
 interface FormData {
   email: string;
   password: string;
 }
 
-export default function LoginPage({ setToken }) {
+export default function LoginPage({ setToken }: TokenProps) {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,15 +25,18 @@ export default function LoginPage({ setToken }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_NEST_SERVER_URL}/auth/login`,
-        formData,
-      );
-      // Update the token in the global state
-      setToken(response.data.access_token);
-      // Redirect to dashboard after login
+      const response = await loginUser(formData);
+      setToken(response.accessToken);
     } catch (error) {
-      setError("Invalid credentials, please try again.", error);
+      const apiError = error as { response: { data: ApiError } };
+
+      // Extract the error message from the API error response
+      const errorMessage =
+        apiError?.response?.data?.message ||
+        "Invalid credentials, please try again.";
+      console.error("Login Error:", errorMessage);
+      alert(errorMessage);
+      setError(errorMessage);
     }
   };
 

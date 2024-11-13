@@ -13,21 +13,15 @@ export interface LoginRequest {
 }
 
 // Response Types
-export interface AuthResponse {
-  access_token: string;
-  refresh_token?: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
+export interface LoginResponse {
+  name: string;
+  accessToken: string;
 }
 
-export interface UserProfileResponse {
-  userId: string;
+export interface RegisterResponse {
+  id: number;
   name: string;
   email: string;
-  createdAt: string;
 }
 
 // Error Type

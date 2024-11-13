@@ -1,20 +1,16 @@
 import { useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
-interface FormData {
-  name: string;
-  email: string;
-  password: string;
-}
+import { ApiError, RegisterRequest, RegisterResponse } from "@/types/api";
+import { registerUser } from "@/api/auth";
 
 export default function Register(): JSX.Element {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<RegisterRequest>({
     name: "",
     email: "",
     password: "",
   });
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -27,14 +23,17 @@ export default function Register(): JSX.Element {
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3001/user/register",
-        formData,
-      );
-      console.log("User registered:", response.data);
+      const response: RegisterResponse = await registerUser(formData);
+      alert(`Registration successful! Welcome, ${response.name}`);
+
       router.push("/login"); // Redirect to login after successful registration
     } catch (error) {
-      console.error("Registration failed:", error);
+      const apiError = error as { response: { data: ApiError } };
+      const errorMessage =
+        apiError?.response?.data?.message ||
+        "Registration failed. Please try again.";
+      setError(errorMessage);
+      console.error("Registration Error:", errorMessage);
     }
   };
 
@@ -96,6 +95,7 @@ export default function Register(): JSX.Element {
               required
             />
           </div>
+          {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-300"
