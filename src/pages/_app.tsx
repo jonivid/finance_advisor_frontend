@@ -1,34 +1,37 @@
+// _app.tsx
 import { AppProps } from "next/app";
-import { useState, useEffect } from "react";
-import "../styles/globals.css"; // Assuming you have global styles
-import Layout from "./layout";
 import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import "../styles/globals.css";
+import Layout from "./layout";
+import { TokenProps } from "@/types/global";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
-
-  // Manage the token state globally
-  const [token, setToken] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.getItem("token") : null,
-  );
+  const [token, setToken] = useState<TokenProps["token"]>(null);
 
   useEffect(() => {
-    // Sync token with localStorage when it changes
+    const storedToken = sessionStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      router.push("/dashboard");
+    }
+  }, []);
+
+  useEffect(() => {
     if (token) {
-      localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
+      sessionStorage.setItem("token", token);
+      router.push("/dashboard");
     }
   }, [token]);
 
-  // Handle logout
-  const handleLogout = () => {
-    router.push("/");
+  const handleLogout = (): void => {
+    sessionStorage.removeItem("token");
     setToken(null);
+    router.push("/"); // Redirect to home page on logout
   };
 
   return (
-    // Wrap all pages in the Layout component
     <Layout token={token} handleLogout={handleLogout}>
       <Component {...pageProps} token={token} setToken={setToken} />
     </Layout>

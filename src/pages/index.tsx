@@ -3,21 +3,22 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+import { TokenProps } from "@/types/global";
 
-export default function Home() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export default function Home(): JSX.Element {
+  const [hasToken, setHasToken] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     // Check if the user has a valid JWT token in localStorage
-    const token = localStorage.getItem("token");
+    const token: TokenProps["token"] = sessionStorage.getItem("token");
     if (token) {
-      setIsAuthenticated(true);
+      setHasToken(true);
     }
   }, []);
 
-  const handleGetStarted = () => {
-    if (isAuthenticated) {
+  const handleGetStarted = (): void => {
+    if (hasToken) {
       // Redirect to the dashboard if the user is authenticated
       router.push("/dashboard");
     } else {
@@ -52,7 +53,7 @@ export default function Home() {
             Get Started
           </button>
 
-          {!isAuthenticated && (
+          {!hasToken && (
             <div className="flex space-x-6">
               <Link href="/login" className="text-blue-500 hover:underline">
                 Login

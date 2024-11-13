@@ -1,3 +1,4 @@
+// DashboardPage.tsx
 import { useState, useEffect } from "react";
 import SummaryWidget from "./components/widgets/SummaryWidget";
 import dynamic from "next/dynamic";
@@ -25,19 +26,11 @@ export default function DashboardPage({ token }: { token: string | null }) {
     }
   }, [token]);
 
-  // If the token validity check hasn’t completed yet, show a loading placeholder
+ 
   if (isTokenValid === null) {
     return (
       <div className="text-center text-gray-500 font-medium mt-8">
         Loading...
-      </div>
-    );
-  }
-
-  if (!isTokenValid) {
-    return (
-      <div className="text-center text-red-500 font-medium mt-8">
-        Please log in to view your dashboard
       </div>
     );
   }

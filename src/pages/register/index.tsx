@@ -3,22 +3,28 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-export default function Register() {
-  const [formData, setFormData] = useState({
+interface FormData {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export default function Register(): JSX.Element {
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     password: "",
   });
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
       const response = await axios.post(

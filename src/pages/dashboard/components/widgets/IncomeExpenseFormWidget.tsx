@@ -25,7 +25,7 @@ export default function IncomeExpenseFormWidget({
     if (token) {
       try {
         await axios.post(
-          `${process.env.NEXT_PUBLIC_NEST_SERVER_URL}/financial-record`,
+          `${process.env.NEXT_PUBLIC_NEST_SERVER_URL}/finance/finance_record`,
           formData,
           { headers: { Authorization: `Bearer ${token}` } },
         );

@@ -2,10 +2,17 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage({ setToken }) {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState("");
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -24,9 +31,8 @@ export default function LoginPage({ setToken }) {
       // Update the token in the global state
       setToken(response.data.access_token);
       // Redirect to dashboard after login
-      router.push("/dashboard");
     } catch (error) {
-      setError("Invalid credentials, please try again.");
+      setError("Invalid credentials, please try again.", error);
     }
   };
 

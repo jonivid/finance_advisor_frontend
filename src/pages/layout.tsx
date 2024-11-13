@@ -1,25 +1,32 @@
-import React, { ReactNode } from "react";
+// layout.tsx
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
-// Define the interface for the layout props
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
   token: string | null;
   handleLogout: () => void;
 }
 
 export default function Layout({ children, token, handleLogout }: LayoutProps) {
+  const [isClient, setIsClient] = useState(false);
+  const [clientToken, setClientToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+    setClientToken(token);
+  }, [token]);
+
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
       <header className="bg-blue-600 text-white shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="text-xl font-bold">
             <Link href="/">Personal Finance Advisor</Link>
           </div>
           <nav className="space-x-6">
-            {/* Only render links based on the global token state */}
-            {token ? (
+            {/* Use a consistent structure with placeholders */}
+            {isClient && clientToken ? (
               <>
                 <Link href="/dashboard" className="hover:underline">
                   Dashboard
@@ -44,11 +51,7 @@ export default function Layout({ children, token, handleLogout }: LayoutProps) {
           </nav>
         </div>
       </header>
-
-      {/* Main Content Area */}
-      <div className="flex-grow container mx-auto px-4 py-8">{children}</div>
-
-      {/* Footer */}
+      <main className="flex-grow container mx-auto px-4 py-8">{children}</main>
       <footer className="bg-gray-800 text-white py-4">
         <div className="container mx-auto px-4 text-center">
           &copy; 2024 Personal Finance Advisor. All rights reserved.
