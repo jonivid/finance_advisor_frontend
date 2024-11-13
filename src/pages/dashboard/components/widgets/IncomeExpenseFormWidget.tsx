@@ -5,6 +5,7 @@ interface IncomeExpenseFormProps {
   token: string | null;
 }
 
+
 export default function IncomeExpenseFormWidget({
   token,
 }: IncomeExpenseFormProps) {
